@@ -1,0 +1,10 @@
+<Configuration status="info" name="2payuback" packages="">
+    <Appenders>
+        <Console name="stdout" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %p %m%n"/>
+        </Console>
+    </Appenders>
+    <Root level="info">
+        <AppenderRef ref="STDOUT"/>
+    </Root>
+</Configuration>
