@@ -11,7 +11,6 @@ spring:
   datasource:
     driver-class-name: org.h2.Driver
     username: sa
-
     password: password
     url: jdbc:h2:mem:testdb
     platform: org.hibernate.dialect.H2Dialect
@@ -48,3 +47,7 @@ logging:
     level:
         org:
             springframework: INFO
+aws :
+    accesskey : AKIA6HQF3DDH4BAR2R4P
+    secretkey : 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
+    bucketpath : 2payubackdocuments/lendingagreements

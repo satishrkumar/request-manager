@@ -1,5 +1,7 @@
 package net.pay.you.back.request.manager.service;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -7,12 +9,15 @@ import java.math.BigDecimal;
 @Service
 public class RepaymentCalculatorService {
 
+    private static final Logger logger = LogManager.getLogger(RepaymentCalculatorService.class);
     public static final Integer NO_OF_MONTHS = 12;
+    public static final Integer ONE = 1;
+
 
     private BigDecimal calculateMonthlyPayment(BigDecimal principal, BigDecimal apr, Integer termInYears) {
         BigDecimal monthlyInterestRate = apr.divide(BigDecimal.valueOf(NO_OF_MONTHS));
-        Integer termInMonths = termInYears * 12;
-        double toDivideVal = 1 - Math.pow(1 + monthlyInterestRate.doubleValue(), -termInMonths);
+        Integer termInMonths = termInYears * NO_OF_MONTHS;
+        double toDivideVal = ONE - Math.pow(ONE + monthlyInterestRate.doubleValue(), -termInMonths);
         BigDecimal monthlyPayment = (monthlyInterestRate.multiply(principal)).divide(BigDecimal.valueOf(toDivideVal));
         return monthlyPayment;
     }

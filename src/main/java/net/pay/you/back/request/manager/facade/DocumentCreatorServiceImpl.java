@@ -1,26 +1,53 @@
 package net.pay.you.back.request.manager.facade;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import net.pay.you.back.request.manager.comm.DocumentCreator;
+import net.pay.you.back.request.manager.config.AwsS3Config;
+import net.pay.you.back.request.manager.dao.DocumentVersionDAO;
+import net.pay.you.back.request.manager.domain.DocVersion;
 import net.pay.you.back.request.manager.domain.Loan;
 import net.pay.you.back.request.manager.domain.User;
+import net.pay.you.back.request.manager.service.SequenceGeneratorService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.List;
 
 @Component
 public class DocumentCreatorServiceImpl implements DocumentCreatorService {
+    private static final Logger logger = LogManager.getLogger(DocumentCreatorServiceImpl.class);
+    public static final String MIME_TYPE="application/pdf";
+    @Autowired
+    private AwsS3Config s3Config;
+
     @Autowired
     private UserService userService;
 
     @Autowired
     private LoanProcessingService loanProcessingService;
+
+    @Autowired
+    private SequenceGeneratorService sequenceGeneratorService;
+
+    @Autowired
+    private DocumentVersionDAO documentVersionDAO;
 
     @Override
     public ByteArrayInputStream createDocument(String lenderEmailId) {
@@ -85,14 +112,14 @@ public class DocumentCreatorServiceImpl implements DocumentCreatorService {
                 cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                 table.addCell(cell);
 
-                cell = new PdfPCell(new Phrase(null != lenderLoanDetail.getRepaymentDate() ? lenderLoanDetail.getRepaymentDate().toString() : "2021-04-02T10:45:00.000+00:00" ));
+                cell = new PdfPCell(new Phrase(null != lenderLoanDetail.getRepaymentDate() ? lenderLoanDetail.getRepaymentDate().toString() : "2021-04-02T10:45:00.000+00:00"));
                 cell.setPaddingLeft(5);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                 cell.setPaddingLeft(5);
                 table.addCell(cell);
 
-                cell = new PdfPCell(new Phrase(null !=  lenderLoanDetail.getApprovedTimeStamp() ? lenderLoanDetail.getApprovedTimeStamp().toString() : "2019-04-02T10:45:00.000+00:00"));
+                cell = new PdfPCell(new Phrase(null != lenderLoanDetail.getApprovedTimeStamp() ? lenderLoanDetail.getApprovedTimeStamp().toString() : "2019-04-02T10:45:00.000+00:00"));
                 cell.setPaddingLeft(5);
                 cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
                 cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
@@ -109,7 +136,7 @@ public class DocumentCreatorServiceImpl implements DocumentCreatorService {
             Chunk chunk = new Chunk(pdfContent, headFont);
 
             document.add(chunk);
-            document.add( new Phrase("\n") );
+            document.add(new Phrase("\n"));
             document.add(Chunk.NEWLINE);
             document.add(table);
             document.close();
@@ -117,19 +144,43 @@ public class DocumentCreatorServiceImpl implements DocumentCreatorService {
             e.printStackTrace();
         }
 
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(out.toByteArray());
+        saveDocumentInAws(inputStream, lender.getFirstName() + " " + lender.getLastName());
         return new ByteArrayInputStream(out.toByteArray());
     }
 
-//    private void saveDocumentInAws(){
-//        AWSCredentials credentials = new BasicAWSCredentials(appId,appSecret);
-//        AmazonS3 s3Client = new AmazonS3Client(credentials);
-//
-//        String bucketPath = "YOUR_BUCKET_NAME/FOLDER_INSIDE_BUCKET";
-//        InputStream is = new FileInputStream("YOUR_PDF_FILE_PATH");
-//        ObjectMetadata meta = new ObjectMetadata();
-//        meta.setContentLength(is.available());
-//        s3Client.putObject(new PutObjectRequest(bucketPath,"YOUR_FILE.pdf", is, meta).withCannedAcl(CannedAccessControlList.Private));
-//    }
+
+    private void saveDocumentInAws(ByteArrayInputStream inputStream, String lenderName) {
+        try {
+            AWSCredentials credentials = new BasicAWSCredentials(s3Config.getAccesskey(), s3Config.getSecretkey());
+            AmazonS3 s3Client = new AmazonS3Client(credentials);
+
+            String bucketPath = s3Config.getBucketpath();
+            InputStream is = new BufferedInputStream(inputStream);
+            ObjectMetadata meta = new ObjectMetadata();
+            meta.setContentLength(is.available());
+            String fileName = new StringBuilder(lenderName).append(".pdf").toString();
+            PutObjectResult result = s3Client.putObject(new PutObjectRequest(bucketPath, fileName, is, meta).withCannedAcl(CannedAccessControlList.Private));
+            String docVersionId = result.getVersionId();
+            saveDocVersionDetails(docVersionId);
+
+        } catch (Exception ex) {
+            logger.error("Error while saving pdf document on aws s3 box ", ex);
+        }
+    }
+
+    private void saveDocVersionDetails(String docVersionId) {
+        try {
+        DocVersion documentVersion = new DocVersion();
+        documentVersion.setId(sequenceGeneratorService.generateSequence(DocVersion.SEQUENCE_NAME));
+        documentVersion.setDocumentVersion(docVersionId);
+        documentVersion.setMimeType(MIME_TYPE);
+        documentVersionDAO.save(documentVersion);
+        } catch (Exception ex) {
+            logger.error("Error while saving document version details in mongo db ", ex);
+        }
+    }
+
 
     @Override
     public DocumentCreator findDocumentByEmailId(String emailId) {

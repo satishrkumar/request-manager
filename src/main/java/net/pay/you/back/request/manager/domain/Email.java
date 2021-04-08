@@ -1,13 +1,13 @@
 package net.pay.you.back.request.manager.domain;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Map;
 
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class Email {
     private String from;
