@@ -11,12 +11,12 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserController {
 
-
     @Autowired
     UserService userService;
 
-    @PostMapping("/create")
-    public User create(@RequestBody User user) {
+    @PostMapping("/registerUser")
+    public User create(@RequestBody User user)
+    {
         return userService.createUser(user);
     }
 

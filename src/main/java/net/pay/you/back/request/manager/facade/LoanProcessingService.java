@@ -11,6 +11,8 @@ public interface LoanProcessingService {
 
     Loan findLoanDetailsByBorrowerEmailId(String emailId);
 
+    List<Loan> findLoanDetailsByRepaymentDate();
+
     Loan updateExistingLoan(Loan loan);
 
     String deleteLoan(String emailId);

@@ -7,6 +7,8 @@ import net.pay.you.back.request.manager.service.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,6 +20,8 @@ public class LoanProcessingServiceImpl implements LoanProcessingService {
 
     @Autowired
     SequenceGeneratorService sequenceGeneratorService;
+
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     UUID uuid = UUID.randomUUID();
 
@@ -38,13 +42,24 @@ public class LoanProcessingServiceImpl implements LoanProcessingService {
     }
 
     @Override
-    public Loan
-    findLoanDetailsByBorrowerEmailId(final String emailId){
+    public Loan findLoanDetailsByBorrowerEmailId(final String emailId){
         Optional<Loan> loanModelOptional = loanDAO.findLoanByBorrowerEmailId(emailId);
         if (loanModelOptional.isPresent()) {
             return loanModelOptional.get();
         }else {
             throw new RuntimeException("Loan details not found for borrower email id " + emailId);
+        }
+    }
+
+    @Override
+    public List<Loan> findLoanDetailsByRepaymentDate(){
+        LocalDateTime todaysDate = LocalDateTime.now();
+        LocalDateTime repaymentDate = todaysDate.plusDays(3L);
+        List<Loan> loanDetails = loanDAO.findLoanByRepaymentDate(repaymentDate);
+        if (null != loanDetails && !loanDetails.isEmpty()) {
+            return loanDetails;
+        }else {
+            throw new RuntimeException("Loan details not found for todays date having repayment date " + todaysDate.format(formatter));
         }
     }
 

@@ -36,5 +36,10 @@ public class LoanController {
         return loanService.findLoanByBorrowerEmailId(emailId);
     }
 
+    @GetMapping("/findLoanByRepaymentDate")
+    public List<Loan> findLoanByRepaymentDate() {
+        return loanService.findLoanByRepaymentDate();
+    }
+
 
 }

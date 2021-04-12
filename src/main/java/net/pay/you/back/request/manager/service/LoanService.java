@@ -14,27 +14,31 @@ import java.util.List;
 @Service
 public class LoanService {
     @Autowired
-    private LoanProcessingServiceImpl loanServiceFacade;
+    private LoanProcessingServiceImpl loanProcessingService;
 
     public State requestLoan(LoanRequest loanRequest) {
         Loan loan = Loan.convertFromBaseLoanRequest(loanRequest);
         loan.setLoanState(State.PENDING);
-        loanServiceFacade.createLoan(loan);
+        loanProcessingService.createLoan(loan);
         return State.PENDING;
    }
 
     public State approveLoan(LoanApproval loanApproval) {
         Loan loan = Loan.convertFromBaseLoanApproval(loanApproval);
         loan.setLoanState(State.IN_PROCESS);
-        loanServiceFacade.createLoan(loan);
+        loanProcessingService.createLoan(loan);
         return State.IN_PROCESS;
     }
 
     public List<Loan> findLoanByLenderEmailId(String emailId) {
-        return loanServiceFacade.findLoanDetailsByLenderEmailId(emailId);
+        return loanProcessingService.findLoanDetailsByLenderEmailId(emailId);
     }
 
     public Loan findLoanByBorrowerEmailId(String emailId) {
-        return loanServiceFacade.findLoanDetailsByBorrowerEmailId(emailId);
+        return loanProcessingService.findLoanDetailsByBorrowerEmailId(emailId);
+    }
+
+    public List<Loan> findLoanByRepaymentDate() {
+        return loanProcessingService.findLoanDetailsByRepaymentDate();
     }
 }

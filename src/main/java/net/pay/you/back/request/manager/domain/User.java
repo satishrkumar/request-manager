@@ -21,10 +21,12 @@ public class User {
     private String emailId;
     private String firstName;
     private String middleName;
+    private String dob;
     private String lastName;
     private String password;
     private String nationality;
     private String phoneNumber;
     private Address address;
+    private UserAgreement userAgreement;
 
 }
