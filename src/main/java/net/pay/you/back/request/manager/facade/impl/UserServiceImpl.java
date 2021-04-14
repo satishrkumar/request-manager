@@ -1,10 +1,11 @@
-package net.pay.you.back.request.manager.facade;
+package net.pay.you.back.request.manager.facade.impl;
 
 
 
 
 import net.pay.you.back.request.manager.dao.UserDAO;
-import net.pay.you.back.request.manager.domain.User;
+import net.pay.you.back.request.manager.domain.user.User;
+import net.pay.you.back.request.manager.facade.UserService;
 import net.pay.you.back.request.manager.service.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

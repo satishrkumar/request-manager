@@ -2,9 +2,9 @@ package net.pay.you.back.request.manager.service;
 
 import net.pay.you.back.request.manager.comm.LoanApproval;
 import net.pay.you.back.request.manager.comm.LoanRequest;
-import net.pay.you.back.request.manager.domain.Loan;
+import net.pay.you.back.request.manager.domain.loan.Loan;
 import net.pay.you.back.request.manager.domain.enums.State;
-import net.pay.you.back.request.manager.facade.LoanProcessingServiceImpl;
+import net.pay.you.back.request.manager.facade.impl.LoanProcessingServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

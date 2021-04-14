@@ -1,6 +1,6 @@
 package net.pay.you.back.request.manager.dao;
 
-import net.pay.you.back.request.manager.domain.Loan;
+import net.pay.you.back.request.manager.domain.loan.Loan;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,7 +18,7 @@ public interface LoanDAO extends MongoRepository<Loan, Long> {
     @Query("{ 'borrowerEmailId' : ?0 }")
     Optional<Loan> findLoanByBorrowerEmailId(String emailId);
 
-    //@Query("{ 'repaymentDate' : { $gt : ?0 } }")
-    @Query("{ 'repaymentDate' : ?0 }")
-    List<Loan> findLoanByRepaymentDate(LocalDateTime repaymentDate);
+    @Query("{ 'repaymentDate' : { $gt : ?0 , $lte : ?1 } }")
+   // @Query("{ {'repaymentDate' } : ?0 }")
+    List<Loan> findLoanByRepaymentDate(LocalDateTime todaysDate,LocalDateTime repaymentDate);
 }

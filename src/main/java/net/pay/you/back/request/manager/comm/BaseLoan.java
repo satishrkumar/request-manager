@@ -2,7 +2,7 @@ package net.pay.you.back.request.manager.comm;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import net.pay.you.back.request.manager.domain.User;
+import net.pay.you.back.request.manager.domain.user.User;
 import net.pay.you.back.request.manager.domain.enums.RepaymentFrequency;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -23,6 +23,6 @@ public class BaseLoan {
     private RepaymentFrequency repayFrequency;
     private User lender;
     private User borrower;
-
+    private Integer loanTerm;
 
 }

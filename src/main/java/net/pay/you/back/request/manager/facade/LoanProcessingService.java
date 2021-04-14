@@ -1,6 +1,6 @@
 package net.pay.you.back.request.manager.facade;
 
-import net.pay.you.back.request.manager.domain.Loan;
+import net.pay.you.back.request.manager.domain.loan.Loan;
 
 import java.util.List;
 

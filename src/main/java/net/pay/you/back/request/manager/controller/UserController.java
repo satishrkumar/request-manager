@@ -1,6 +1,6 @@
 package net.pay.you.back.request.manager.controller;
 
-import net.pay.you.back.request.manager.domain.User;
+import net.pay.you.back.request.manager.domain.user.User;
 import net.pay.you.back.request.manager.facade.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

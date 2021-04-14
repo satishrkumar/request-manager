@@ -1,4 +1,4 @@
-package net.pay.you.back.request.manager.facade;
+package net.pay.you.back.request.manager.facade.impl;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -16,8 +16,11 @@ import net.pay.you.back.request.manager.comm.DocumentCreator;
 import net.pay.you.back.request.manager.config.AwsS3Config;
 import net.pay.you.back.request.manager.dao.DocumentVersionDAO;
 import net.pay.you.back.request.manager.domain.DocVersion;
-import net.pay.you.back.request.manager.domain.Loan;
-import net.pay.you.back.request.manager.domain.User;
+import net.pay.you.back.request.manager.domain.loan.Loan;
+import net.pay.you.back.request.manager.domain.user.User;
+import net.pay.you.back.request.manager.facade.DocumentCreatorService;
+import net.pay.you.back.request.manager.facade.LoanProcessingService;
+import net.pay.you.back.request.manager.facade.UserService;
 import net.pay.you.back.request.manager.service.SequenceGeneratorService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

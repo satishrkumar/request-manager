@@ -1,8 +1,9 @@
-package net.pay.you.back.request.manager.facade;
+package net.pay.you.back.request.manager.facade.impl;
 
 
 import net.pay.you.back.request.manager.dao.LoanDAO;
-import net.pay.you.back.request.manager.domain.Loan;
+import net.pay.you.back.request.manager.domain.loan.Loan;
+import net.pay.you.back.request.manager.facade.LoanProcessingService;
 import net.pay.you.back.request.manager.service.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Component
 public class LoanProcessingServiceImpl implements LoanProcessingService {
@@ -32,34 +34,36 @@ public class LoanProcessingServiceImpl implements LoanProcessingService {
     }
 
     @Override
-    public List<Loan> findLoanDetailsByLenderEmailId(final String emailId){
+    public List<Loan> findLoanDetailsByLenderEmailId(final String emailId) {
         List<Loan> loanDetails = loanDAO.findLoanByLenderEmailId(emailId);
         if (null != loanDetails && !loanDetails.isEmpty()) {
             return loanDetails;
-        }else {
+        } else {
             throw new RuntimeException("Loan details not found for lender email id " + emailId);
         }
     }
 
     @Override
-    public Loan findLoanDetailsByBorrowerEmailId(final String emailId){
+    public Loan findLoanDetailsByBorrowerEmailId(final String emailId) {
         Optional<Loan> loanModelOptional = loanDAO.findLoanByBorrowerEmailId(emailId);
         if (loanModelOptional.isPresent()) {
             return loanModelOptional.get();
-        }else {
+        } else {
             throw new RuntimeException("Loan details not found for borrower email id " + emailId);
         }
     }
 
     @Override
-    public List<Loan> findLoanDetailsByRepaymentDate(){
-        LocalDateTime todaysDate = LocalDateTime.now();
-        LocalDateTime repaymentDate = todaysDate.plusDays(3L);
-        List<Loan> loanDetails = loanDAO.findLoanByRepaymentDate(repaymentDate);
+    public List<Loan> findLoanDetailsByRepaymentDate() {
+        LocalDateTime fromDate = LocalDateTime.now();
+        LocalDateTime repaymentDate = fromDate.plusDays(3L);
+        List<Loan> loanDetails = loanDAO.findLoanByRepaymentDate(fromDate, fromDate.plusDays(4L));
         if (null != loanDetails && !loanDetails.isEmpty()) {
-            return loanDetails;
-        }else {
-            throw new RuntimeException("Loan details not found for todays date having repayment date " + todaysDate.format(formatter));
+            return loanDetails.stream()
+                    .filter(loan -> loan.getRepaymentDate().format(formatter).equals(repaymentDate.format(formatter)))
+                    .collect(Collectors.toList());
+        } else {
+            throw new RuntimeException("Loan details not found for todays date having repayment date " + repaymentDate.format(formatter));
         }
     }
 
@@ -74,10 +78,10 @@ public class LoanProcessingServiceImpl implements LoanProcessingService {
         List<Loan> loanDetails = loanDAO.findLoanByLenderEmailId(emailId);
         if (null != loanDetails && !loanDetails.isEmpty()) {
             loanDetails.stream()
-                       .forEach(deletedLoan -> {
-                           deletedLoan.setDeleteInd(true);
-                           loanDAO.save(deletedLoan);
-                       });
+                    .forEach(deletedLoan -> {
+                        deletedLoan.setDeleteInd(true);
+                        loanDAO.save(deletedLoan);
+                    });
             return "Loan deleted with emailId " + emailId;
         } else {
             throw new RuntimeException("Loan details not found for email id " + emailId);

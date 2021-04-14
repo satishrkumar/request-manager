@@ -1,4 +1,4 @@
-package net.pay.you.back.request.manager.domain;
+package net.pay.you.back.request.manager.domain.loan;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import net.pay.you.back.request.manager.comm.BaseLoan;
 import net.pay.you.back.request.manager.comm.LoanApproval;
 import net.pay.you.back.request.manager.comm.LoanRequest;
+import net.pay.you.back.request.manager.domain.user.User;
 import net.pay.you.back.request.manager.domain.enums.RepaymentFrequency;
 import net.pay.you.back.request.manager.domain.enums.State;
 import org.springframework.data.annotation.Id;

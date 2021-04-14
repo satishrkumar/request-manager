@@ -1,7 +1,7 @@
 package net.pay.you.back.request.manager.facade;
 
 
-import net.pay.you.back.request.manager.domain.User;
+import net.pay.you.back.request.manager.domain.user.User;
 
 import java.util.List;
 

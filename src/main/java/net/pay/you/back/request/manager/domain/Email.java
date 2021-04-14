@@ -1,7 +1,9 @@
 package net.pay.you.back.request.manager.domain;
 
 import lombok.*;
+import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
 import java.util.Map;
 
 @Builder
@@ -9,7 +11,9 @@ import java.util.Map;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Email {
+@Component
+public class Email implements Serializable {
+    static final long serialVersionUID = 0x1122334455667788L;
     private String from;
     private String to;
     private String name;

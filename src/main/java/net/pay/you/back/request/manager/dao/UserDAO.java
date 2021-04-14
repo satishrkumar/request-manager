@@ -1,6 +1,6 @@
 package net.pay.you.back.request.manager.dao;
 
-import net.pay.you.back.request.manager.domain.User;
+import net.pay.you.back.request.manager.domain.user.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;

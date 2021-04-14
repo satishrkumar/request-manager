@@ -2,7 +2,7 @@ package net.pay.you.back.request.manager.controller;
 
 import net.pay.you.back.request.manager.comm.LoanApproval;
 import net.pay.you.back.request.manager.comm.LoanRequest;
-import net.pay.you.back.request.manager.domain.Loan;
+import net.pay.you.back.request.manager.domain.loan.Loan;
 import net.pay.you.back.request.manager.domain.enums.State;
 import net.pay.you.back.request.manager.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;

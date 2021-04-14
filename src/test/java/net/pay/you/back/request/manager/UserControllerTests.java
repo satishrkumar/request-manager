@@ -1,9 +1,7 @@
 package net.pay.you.back.request.manager;
 
-import static org.junit.Assert.assertEquals;
-
-import net.pay.you.back.request.manager.domain.Address;
-import net.pay.you.back.request.manager.domain.User;
+import net.pay.you.back.request.manager.domain.user.Address;
+import net.pay.you.back.request.manager.domain.user.User;
 import org.json.JSONException;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +11,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+
+import static org.junit.Assert.assertEquals;
 
 @SpringBootTest(classes = RequestManagerApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserControllerTests {
