@@ -58,11 +58,9 @@ public class Loan {
         loan.setApprovedTimeStamp(loanApproval.getApprovedTimeStamp());
 
         return loan;
-
-
     }
 
-    private static Loan convertToLoanObj(BaseLoan baseLoan) {
+    public static Loan convertToLoanObj(BaseLoan baseLoan) {
         Loan loan = new Loan();
         loan.setLenderEmailId(baseLoan.getLender().getEmailId());
         loan.setBorrowerEmailId(baseLoan.getBorrower().getEmailId());

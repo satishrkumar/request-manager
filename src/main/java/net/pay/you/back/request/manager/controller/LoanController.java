@@ -26,6 +26,11 @@ public class LoanController {
         return loanService.approveLoan(loanApproval);
     }
 
+    @PostMapping("/editLoan")
+    public State editLoan(@RequestBody LoanRequest loanRequest) {
+        return loanService.editLoan(loanRequest);
+    }
+
     @GetMapping("/findLoanByLenderEmailId/{emailId}")
     public List<Loan> findLoanByLenderEmailId(@PathVariable String emailId) {
         return loanService.findLoanByLenderEmailId(emailId);

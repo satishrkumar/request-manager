@@ -8,7 +8,6 @@ import org.quartz.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -31,12 +30,16 @@ public class EmailJob implements Job {
         try {
             ApplicationContext ctx = getContext(context);
             EmailService emailService =  ctx.getBean(EmailService.class);
-            JobDataMap jobDataMap = context.getMergedJobDataMap();
-            List<Email> emails = (List<Email>) jobDataMap.get("emaildata");
+            EmailRepayService emailRepayService = ctx.getBean(EmailRepayService.class);
+            JobDetail jobDetail =  context.getJobDetail();
+            List<Email> emails = emailRepayService.getEmailsForRepayment();
 
-            emails.stream()
-                    .forEach(email -> emailService.sendEmail(email));
-            context.getMergedJobDataMap().put("emaildata",Collections.EMPTY_LIST);
+            if(emails != null ) {
+                emails.stream()
+                        .forEach(email -> emailService.sendEmail(email));
+            }
+
+            context.getScheduler().addJob(jobDetail,true);
         } catch (Exception ex) {
            logger.error("Error ccured while executing and sending email job", ex);
         }

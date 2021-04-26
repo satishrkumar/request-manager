@@ -21,6 +21,7 @@ public class LoanService {
         loan.setLoanState(State.PENDING);
         loanProcessingService.createLoan(loan);
         return State.PENDING;
+
    }
 
     public State approveLoan(LoanApproval loanApproval) {
@@ -28,6 +29,14 @@ public class LoanService {
         loan.setLoanState(State.IN_PROCESS);
         loanProcessingService.createLoan(loan);
         return State.IN_PROCESS;
+    }
+
+    public State editLoan(LoanRequest loanRequest) {
+        Loan loan = Loan.convertFromBaseLoanRequest(loanRequest);
+        loan.setLoanState(State.PENDING);
+        loanProcessingService.createLoan(loan);
+        return State.PENDING;
+
     }
 
     public List<Loan> findLoanByLenderEmailId(String emailId) {
