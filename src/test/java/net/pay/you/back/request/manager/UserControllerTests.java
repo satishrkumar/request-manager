@@ -1,6 +1,5 @@
 package net.pay.you.back.request.manager;
 
-import net.pay.you.back.request.manager.domain.user.Address;
 import net.pay.you.back.request.manager.domain.user.User;
 import org.json.JSONException;
 import org.junit.Test;
@@ -21,12 +20,9 @@ public class UserControllerTests {
             .emailId("satish.kumar@yahoo.com")
             .firstName("Satish")
             .lastName("Kumar")
-            .address(Address.builder()
-                    .postcode("BH8 9EG")
-                    .town("Bournemouth")
-                    .state("Dorset")
-                    .addressLine1("St Albans Avenue")
-                    .build())
+            .postalcode("BH8 9EG")
+            .town("Bournemouth")
+            .address1("St Albans Avenue")
             .build();
     TestRestTemplate restTemplate = new TestRestTemplate();
     HttpHeaders headers = new HttpHeaders();

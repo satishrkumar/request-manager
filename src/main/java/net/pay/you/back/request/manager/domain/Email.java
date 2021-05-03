@@ -1,10 +1,14 @@
 package net.pay.you.back.request.manager.domain;
 
-import lombok.*;
-import org.springframework.stereotype.Component;
-
 import java.io.Serializable;
 import java.util.Map;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.stereotype.Component;
 
 @Builder
 @Data

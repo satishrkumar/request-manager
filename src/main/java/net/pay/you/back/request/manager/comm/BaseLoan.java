@@ -1,13 +1,17 @@
 package net.pay.you.back.request.manager.comm;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
-import net.pay.you.back.request.manager.domain.user.User;
-import net.pay.you.back.request.manager.domain.enums.RepaymentFrequency;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import net.pay.you.back.request.manager.domain.enums.RepaymentFrequency;
+import net.pay.you.back.request.manager.domain.user.User;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Builder
 @Data

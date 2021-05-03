@@ -1,5 +1,8 @@
 package net.pay.you.back.request.manager.domain.loan;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -7,15 +10,12 @@ import lombok.NoArgsConstructor;
 import net.pay.you.back.request.manager.comm.BaseLoan;
 import net.pay.you.back.request.manager.comm.LoanApproval;
 import net.pay.you.back.request.manager.comm.LoanRequest;
-import net.pay.you.back.request.manager.domain.user.User;
 import net.pay.you.back.request.manager.domain.enums.RepaymentFrequency;
 import net.pay.you.back.request.manager.domain.enums.State;
+import net.pay.you.back.request.manager.domain.user.User;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Builder
 @Data

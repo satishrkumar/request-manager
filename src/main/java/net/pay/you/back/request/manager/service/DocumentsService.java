@@ -1,10 +1,10 @@
 package net.pay.you.back.request.manager.service;
 
+import java.io.ByteArrayInputStream;
+
 import net.pay.you.back.request.manager.facade.DocumentCreatorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.io.ByteArrayInputStream;
 
 @Service
 public class DocumentsService {

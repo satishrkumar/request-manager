@@ -6,7 +6,6 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.util.Objects;
 
-
 import net.pay.you.back.request.manager.domain.DatabaseSequence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;

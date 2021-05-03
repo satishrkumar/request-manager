@@ -1,8 +1,12 @@
 package net.pay.you.back.request.manager.domain.loan;
 
-import lombok.*;
-
 import java.math.BigDecimal;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Builder
 @Data

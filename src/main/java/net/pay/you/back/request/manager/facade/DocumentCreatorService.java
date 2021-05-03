@@ -1,9 +1,9 @@
 package net.pay.you.back.request.manager.facade;
 
 
-import net.pay.you.back.request.manager.comm.DocumentCreator;
-
 import java.io.ByteArrayInputStream;
+
+import net.pay.you.back.request.manager.comm.DocumentCreator;
 
 public interface DocumentCreatorService {
     ByteArrayInputStream createDocument(String lenderEmailId);

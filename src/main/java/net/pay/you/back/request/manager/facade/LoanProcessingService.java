@@ -1,8 +1,8 @@
 package net.pay.you.back.request.manager.facade;
 
-import net.pay.you.back.request.manager.domain.loan.Loan;
-
 import java.util.List;
+
+import net.pay.you.back.request.manager.domain.loan.Loan;
 
 public interface LoanProcessingService {
     Loan createLoan(Loan loan);

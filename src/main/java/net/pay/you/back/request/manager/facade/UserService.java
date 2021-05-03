@@ -1,9 +1,9 @@
 package net.pay.you.back.request.manager.facade;
 
 
-import net.pay.you.back.request.manager.domain.user.User;
-
 import java.util.List;
+
+import net.pay.you.back.request.manager.domain.user.User;
 
 public interface UserService {
 
@@ -12,6 +12,8 @@ public interface UserService {
     List<User> readAllUser();
 
     User findUserByEmailId(String emailId);
+
+    User findUserById(Long id);
 
     User updateExistingUser(User userModel);
 
