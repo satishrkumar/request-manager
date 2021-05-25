@@ -1,8 +1,5 @@
 package net.pay.you.back.request.manager.domain.loan;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +13,9 @@ import net.pay.you.back.request.manager.domain.user.User;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Builder
 @Data
@@ -62,12 +62,14 @@ public class Loan {
 
     public static Loan convertToLoanObj(BaseLoan baseLoan) {
         Loan loan = new Loan();
-        loan.setLenderEmailId(baseLoan.getLender().getEmailId());
-        loan.setBorrowerEmailId(baseLoan.getBorrower().getEmailId());
+        loan.setLenderEmailId(baseLoan.getLender()!= null ? baseLoan.getLender().getEmailId() : "gaurav.udar@purviewservices.com");
+        loan.setBorrowerEmailId(baseLoan.getBorrower()!= null  ? baseLoan.getBorrower().getEmailId() : "satish.kumar@purviewservices.com");
         loan.setPrincipal(baseLoan.getLoanAmt());
-        loan.setApr(baseLoan.getApr());
-        loan.setRepaymentDate(baseLoan.getRepaymentDate());
-        loan.setRepayFrequency(baseLoan.getRepayFrequency());
+        loan.setApr(baseLoan.getRateOfInterest());
+        loan.setRepaymentDate(baseLoan.getRepaymentDate().atStartOfDay());
+        loan.setTerm(baseLoan.getLoanTerm());
+        loan.setRepayFrequency(baseLoan.getRepayFrequency() != null ? baseLoan.getRepayFrequency() : RepaymentFrequency.Monthly);
+
         return loan;
     }
 
@@ -75,3 +77,4 @@ public class Loan {
 
 
 }
+

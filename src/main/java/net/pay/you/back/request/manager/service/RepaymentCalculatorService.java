@@ -1,11 +1,14 @@
 package net.pay.you.back.request.manager.service;
 
+import net.pay.you.back.request.manager.domain.enums.RepaymentFrequency;
 import net.pay.you.back.request.manager.domain.loan.Loan;
+import net.pay.you.back.request.manager.domain.loan.LoanRepayment;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 @Service
 public class RepaymentCalculatorService {
@@ -15,40 +18,63 @@ public class RepaymentCalculatorService {
     public static final Integer NO_OF_DAYS_IN_YEAR = 365;
     public static final Integer NO_OF_QUARTERS_IN_YEAR = 4;
     public static final Integer ONE = 1;
+    public static final BigDecimal MONTHLY_FEE= new BigDecimal("5.99");
 
 
-    public BigDecimal calculateMonthlyPayment(Loan loan) {
+    public LoanRepayment calculateMonthlyPayment(Loan loan) {
         //BigDecimal principal, BigDecimal apr, Integer termInYears
         logger.info("Calculating monthly repayments ");
         BigDecimal principal = loan.getPrincipal();
-        BigDecimal apr = loan.getApr();
-        Integer termInYears = loan.getTerm();
-        BigDecimal monthlyInterestRate = apr.divide(BigDecimal.valueOf(NO_OF_MONTHS_IN_YEAR));
+        BigDecimal apr = loan.getApr().divide(BigDecimal.valueOf(100),4,RoundingMode.HALF_UP);
+        Integer termInYears = loan.getTerm()==null?3:loan.getTerm();
+        BigDecimal monthlyInterestRate = apr.divide(BigDecimal.valueOf(NO_OF_MONTHS_IN_YEAR), 4, RoundingMode.HALF_UP);
         Integer termInMonths = termInYears * NO_OF_MONTHS_IN_YEAR;
         double toDivideVal = ONE - Math.pow(ONE + monthlyInterestRate.doubleValue(), -termInMonths);
-        BigDecimal monthlyPayment = (monthlyInterestRate.multiply(principal)).divide(BigDecimal.valueOf(toDivideVal));
-        return monthlyPayment;
+        BigDecimal monthlyPayment = (monthlyInterestRate.multiply(principal)).divide(BigDecimal.valueOf(toDivideVal), 4, RoundingMode.HALF_UP);
+       // monthlyPayment = monthlyPayment.add(MONTHLY_FEE);
+        BigDecimal totalPayment = monthlyPayment.multiply(BigDecimal.valueOf(termInMonths));
+        LoanRepayment loanRepayment = getLoanRepaymentValues(monthlyPayment, totalPayment);
+
+        return loanRepayment;
     }
 
-    public BigDecimal calculateYearlyPayment(Loan loan) {
+    private LoanRepayment getLoanRepaymentValues(BigDecimal monthlyPayment, BigDecimal totalPayment) {
+        LoanRepayment loanRepayment = new LoanRepayment();
+        loanRepayment.setRepaymentAmount(monthlyPayment);
+        loanRepayment.setLoanServiceCharge(MONTHLY_FEE);
+        loanRepayment.setRepaymentFrequency(RepaymentFrequency.Monthly);
+        loanRepayment.setTotalLoanPayable(totalPayment);
+        return loanRepayment;
+    }
+
+    public LoanRepayment calculateYearlyPayment(Loan loan) {
         //BigDecimal principal, BigDecimal apr, Integer termInYears
         logger.info("Calculating yearly repayments ");
-        BigDecimal yearlyPayment = calculateMonthlyPayment(loan).multiply(BigDecimal.valueOf(NO_OF_MONTHS_IN_YEAR));
-        return yearlyPayment;
+        LoanRepayment loanRepayment = calculateMonthlyPayment(loan);
+        BigDecimal monthlyRepaymentAmount = loanRepayment.getRepaymentAmount();
+        BigDecimal yearlyPayment = monthlyRepaymentAmount.multiply(BigDecimal.valueOf(NO_OF_MONTHS_IN_YEAR));
+        loanRepayment.setRepaymentAmount(yearlyPayment);
+        return loanRepayment;
     }
 
-    public BigDecimal calculateDailyPayment(Loan loan) {
+    public LoanRepayment calculateDailyPayment(Loan loan) {
         //BigDecimal principal, BigDecimal apr, Integer termInYears
         logger.info("Calculating daily repayments ");
-        BigDecimal dailyPayment = calculateYearlyPayment(loan).divide(BigDecimal.valueOf(NO_OF_DAYS_IN_YEAR));
-        return dailyPayment;
+        LoanRepayment loanRepayment = calculateYearlyPayment(loan);
+        BigDecimal yearlyPayment = loanRepayment.getRepaymentAmount();
+        BigDecimal dailyPayment = yearlyPayment.divide(BigDecimal.valueOf(NO_OF_DAYS_IN_YEAR));
+        loanRepayment.setRepaymentAmount(dailyPayment);
+        return loanRepayment;
     }
 
-    public BigDecimal calculateQuarterlyPayment(Loan loan) {
+    public LoanRepayment calculateQuarterlyPayment(Loan loan) {
         //BigDecimal principal, BigDecimal apr, Integer termInYears
         logger.info("Calculating quaterly repayments ");
-        BigDecimal quarterlyPayment = calculateYearlyPayment(loan).divide(BigDecimal.valueOf(NO_OF_QUARTERS_IN_YEAR));
-        return quarterlyPayment;
+        LoanRepayment loanRepayment = calculateYearlyPayment(loan);
+        BigDecimal yearlyPayment = loanRepayment.getRepaymentAmount();
+        BigDecimal quarterlyPayment = yearlyPayment.divide(BigDecimal.valueOf(NO_OF_QUARTERS_IN_YEAR));
+        loanRepayment.setRepaymentAmount(quarterlyPayment);
+        return loanRepayment;
     }
 //
 //    private void amortize(BigDecimal principal, BigDecimal APR, int term, BigDecimal monthlyPayment) {
