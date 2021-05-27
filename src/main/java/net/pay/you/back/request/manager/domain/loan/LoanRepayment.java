@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 public class LoanRepayment {
     RepaymentFrequency repaymentFrequency;
     BigDecimal repaymentAmount;
-    BigDecimal loanServiceCharge;
+    BigDecimal totalInterest;
     BigDecimal totalLoanPayable;
+    BigDecimal principalAmount;
 }

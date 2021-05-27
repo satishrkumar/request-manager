@@ -33,17 +33,19 @@ public class RepaymentCalculatorService {
         BigDecimal monthlyPayment = (monthlyInterestRate.multiply(principal)).divide(BigDecimal.valueOf(toDivideVal), 4, RoundingMode.HALF_UP);
        // monthlyPayment = monthlyPayment.add(MONTHLY_FEE);
         BigDecimal totalPayment = monthlyPayment.multiply(BigDecimal.valueOf(termInMonths));
-        LoanRepayment loanRepayment = getLoanRepaymentValues(monthlyPayment, totalPayment);
+        BigDecimal totalInterest = totalPayment.subtract(principal);
+        LoanRepayment loanRepayment = getLoanRepaymentValues(monthlyPayment, totalPayment,totalInterest,principal);
 
         return loanRepayment;
     }
 
-    private LoanRepayment getLoanRepaymentValues(BigDecimal monthlyPayment, BigDecimal totalPayment) {
+    private LoanRepayment getLoanRepaymentValues(BigDecimal monthlyPayment, BigDecimal totalPayment, BigDecimal totalInterest, BigDecimal principal) {
         LoanRepayment loanRepayment = new LoanRepayment();
         loanRepayment.setRepaymentAmount(monthlyPayment);
-        loanRepayment.setLoanServiceCharge(MONTHLY_FEE);
+        loanRepayment.setTotalInterest(totalInterest);
         loanRepayment.setRepaymentFrequency(RepaymentFrequency.Monthly);
         loanRepayment.setTotalLoanPayable(totalPayment);
+        loanRepayment.setPrincipalAmount(principal);
         return loanRepayment;
     }
 
@@ -54,6 +56,7 @@ public class RepaymentCalculatorService {
         BigDecimal monthlyRepaymentAmount = loanRepayment.getRepaymentAmount();
         BigDecimal yearlyPayment = monthlyRepaymentAmount.multiply(BigDecimal.valueOf(NO_OF_MONTHS_IN_YEAR));
         loanRepayment.setRepaymentAmount(yearlyPayment);
+        loanRepayment.setRepaymentFrequency(RepaymentFrequency.Annualy);
         return loanRepayment;
     }
 
@@ -64,6 +67,7 @@ public class RepaymentCalculatorService {
         BigDecimal yearlyPayment = loanRepayment.getRepaymentAmount();
         BigDecimal dailyPayment = yearlyPayment.divide(BigDecimal.valueOf(NO_OF_DAYS_IN_YEAR));
         loanRepayment.setRepaymentAmount(dailyPayment);
+        loanRepayment.setRepaymentFrequency(RepaymentFrequency.Daily);
         return loanRepayment;
     }
 
@@ -74,6 +78,7 @@ public class RepaymentCalculatorService {
         BigDecimal yearlyPayment = loanRepayment.getRepaymentAmount();
         BigDecimal quarterlyPayment = yearlyPayment.divide(BigDecimal.valueOf(NO_OF_QUARTERS_IN_YEAR));
         loanRepayment.setRepaymentAmount(quarterlyPayment);
+        loanRepayment.setRepaymentFrequency(RepaymentFrequency.Quarterly);
         return loanRepayment;
     }
 //
