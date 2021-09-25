@@ -16,8 +16,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class BaseLoan {
     private BigDecimal loanAmt;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate repaymentDate;
     private BigDecimal rateOfInterest;
     private RepaymentFrequency repayFrequency;
