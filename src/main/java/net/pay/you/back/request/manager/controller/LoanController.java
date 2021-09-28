@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.pay.you.back.request.manager.comm.LoanApproval;
 import net.pay.you.back.request.manager.comm.LoanRequest;
+import net.pay.you.back.request.manager.comm.LoanRequestPayload;
 import net.pay.you.back.request.manager.domain.enums.State;
 import net.pay.you.back.request.manager.domain.loan.Loan;
 import net.pay.you.back.request.manager.service.LoanService;
@@ -22,8 +23,8 @@ public class LoanController {
     LoanService loanService;
 
     @PostMapping("/requestLoan")
-    public State requestLoan(@RequestBody LoanRequest loanRequest) {
-        return loanService.requestLoan(loanRequest);
+    public State requestLoan(@RequestBody LoanRequestPayload loanRequest) {
+        return loanService.requestLoan(loanRequest.getLoanRequest());
     }
 
     @PostMapping("/approveLoan")
