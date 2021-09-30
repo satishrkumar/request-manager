@@ -21,8 +21,6 @@ public class Email implements Serializable {
     static final long serialVersionUID = 0x1122334455667788L;
     private String from;
     private String to;
-    private String name;
     private String subject;
-    private String content;
-    private Map<String, String> model;
+    private EmailModel model;
 }

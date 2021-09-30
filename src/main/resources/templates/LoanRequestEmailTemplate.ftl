@@ -21,8 +21,7 @@
 <table align="center" border="0" cellpadding="0" cellspacing="0" width="800" style="border-collapse: collapse;">
     <tr>
         <td bgcolor="#eaeaea" style="padding: 40px 30px 40px 30px;">
-            <img style="width:200px;display:block;margin:auto;"
-                 src="cid:app_logo" alt="2PayUBackLogo"/>
+            <img src="cid:app_logo" style="width:200px; display:block; margin:auto;">
             <p>Hi</p>
             <p style="margin-top: 14px;">${name} is using an exciting new app which allows friends and families
                 to help each other out financially by borrowing on preferential terms

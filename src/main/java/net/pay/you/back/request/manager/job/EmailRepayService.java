@@ -1,6 +1,7 @@
 package net.pay.you.back.request.manager.job;
 
 import net.pay.you.back.request.manager.domain.Email;
+import net.pay.you.back.request.manager.domain.EmailModel;
 import net.pay.you.back.request.manager.domain.loan.Loan;
 import net.pay.you.back.request.manager.domain.user.User;
 import net.pay.you.back.request.manager.facade.LoanProcessingService;
@@ -30,11 +31,15 @@ public class EmailRepayService {
             String borrowerEmailId = loan.getBorrowerEmailId();
             User user = userService.findUserByEmailId(borrowerEmailId);
 
+            EmailModel model = new EmailModel();
+            model.setName(user.getFirstName() + " " + user.getLastName());
+            model.setContent("Dear " + user.getFirstName() + " Your loan repayment amount is due and below are your loan details");
+
             email.setFrom(FROM_EMAIL);
             email.setTo(user.getEmailId());
-            email.setName(user.getFirstName() + " " + user.getLastName());
             email.setSubject("Loan repayment details");
-            email.setContent("Dear " + user.getFirstName() + " Your loan repayment amount is due and below are your loan details");
+            email.setModel(model);
+
             senderEmails.add(email);
         }
         return senderEmails;
