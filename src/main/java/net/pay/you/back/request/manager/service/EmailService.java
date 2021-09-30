@@ -11,6 +11,7 @@ import net.pay.you.back.request.manager.domain.loan.Loan;
 import net.pay.you.back.request.manager.exception.EmailException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -20,6 +21,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +57,10 @@ public class EmailService {
             mimeMessageHelper.setTo(email.getTo());
             mimeMessageHelper.setBcc(email.getFrom());
             mimeMessageHelper.setText(html, true);
+
+            FileSystemResource file = new FileSystemResource(new File("../app_logo.png"));
+            mimeMessageHelper.addInline("app_logo", file);
+
             mimeMessageHelper.setSubject(email.getSubject());
             mimeMessageHelper.setFrom(email.getFrom());
         } catch (MessagingException e) {

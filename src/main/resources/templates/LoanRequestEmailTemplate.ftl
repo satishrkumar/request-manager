@@ -18,14 +18,16 @@
 </head>
 <body style="margin: 0; padding: 0;">
 
-<table align="center" border="0" cellpadding="0" cellspacing="0" width="700" style="border-collapse: collapse;">
+<table align="center" border="0" cellpadding="0" cellspacing="0" width="800" style="border-collapse: collapse;">
     <tr>
         <td bgcolor="#eaeaea" style="padding: 40px 30px 40px 30px;">
+            <img style="width:200px;display:block;margin:auto;"
+                 src="cid:app_logo" alt="2PayUBackLogo"/>
             <p>Hi</p>
             <p style="margin-top: 14px;">${name} is using an exciting new app which allows friends and families
                 to help each other out financially by borrowing on preferential terms
                 while also providing the option to pay interest back to you, ofter
-                beating the rates available from banks</p>
+                beating the rates available from banks.</p>
             <div style="margin: 25px 40px 0 40px;">
                 <p><b>Request Summary</b></p>
                 <p><i>${loan_amt}</i></p>
