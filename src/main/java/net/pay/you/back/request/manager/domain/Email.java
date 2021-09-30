@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import net.pay.you.back.request.manager.comm.LoanRequest;
 import org.springframework.stereotype.Component;
 
 @Builder
@@ -24,5 +25,4 @@ public class Email implements Serializable {
     private String subject;
     private String content;
     private Map<String, String> model;
-
 }

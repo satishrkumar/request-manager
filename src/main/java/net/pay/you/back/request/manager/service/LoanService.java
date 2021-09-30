@@ -1,7 +1,10 @@
 package net.pay.you.back.request.manager.service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import net.pay.you.back.request.manager.comm.BaseLoan;
 import net.pay.you.back.request.manager.comm.LoanApproval;
 import net.pay.you.back.request.manager.comm.LoanRequest;
 import net.pay.you.back.request.manager.domain.Email;
@@ -30,14 +33,16 @@ public class LoanService {
                 .to(loanRequest.getBorrower().getEmailId())
                 .content("LoanRequest submitted to  " + loanRequest.getLender().getEmailId())
                 .subject(loanRequest.getReasonForBorrow())
-                .build());
+                .model(generateModel(loanRequest, loanRequest.getReasonForBorrow()))
+                .build(), "LoanRequestEmailTemplate.ftl");
         emailService.sendEmail(Email.builder()
                 .name(loanRequest.getLender().getFirstName() !=null ? loanRequest.getLender().getFirstName() : "2PayUBack")
                 .from("purviewemail@purviewservices.co.uk")
                 .content("LoanRequest from " + loanRequest.getBorrower().getEmailId())
                 .to(loanRequest.getLender().getEmailId())
                 .subject(loanRequest.getReasonForBorrow())
-                .build());
+                .model(generateModel(loanRequest, loanRequest.getReasonForBorrow()))
+                .build(), "LoanRequestEmailTemplate.ftl");
         return State.PENDING;
 
    }
@@ -67,5 +72,20 @@ public class LoanService {
 
     public List<Loan> findLoanByRepaymentDate() {
         return loanProcessingService.findLoanDetailsByRepaymentDate();
+    }
+
+    private Map<String, String> generateModel(BaseLoan loanDetails, String reasonForBorrow) {
+        Map model = new HashMap();
+        model.put("location", "London");
+        model.put("signature", "https://localhost:8083/");
+        model.put("purpose", reasonForBorrow);
+        model.put("loan_amt", loanDetails.getLoanAmt()+"");
+        model.put("repayment_frequency", loanDetails.getRepayFrequency()+"");
+        model.put("repayment_date", loanDetails.getRepaymentDate()+"");
+        model.put("repayment_amt", "REPAYMENT_AMT");
+        model.put("repayment_amt_tot", "REPAYMENT_AMT_TOT");
+        model.put("loan_req_summary_url", "www.google.com");
+
+        return model;
     }
 }
