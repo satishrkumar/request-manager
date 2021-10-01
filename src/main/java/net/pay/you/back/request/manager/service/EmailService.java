@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailParseException;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -42,6 +44,10 @@ public class EmailService {
     @Qualifier("freeMarkerConfigurationFactoryBean")
     private Configuration emailConfig;
 
+    @Autowired
+    @Qualifier("webApplicationContext")
+    private ResourceLoader resourceLoader;
+
     public void sendEmail(Email email) {
 
         EmailModel model = new EmailModel();
@@ -68,7 +74,9 @@ public class EmailService {
             mimeMessageHelper.setTo(email.getTo());
             mimeMessageHelper.setBcc(email.getFrom());
             mimeMessageHelper.setText(html, true);
-            mimeMessageHelper.addInline("app_logo", new ClassPathResource("app_logo.png").getFile());
+            Resource resource = resourceLoader.getResource("classpath:app_logo.png");
+//            mimeMessageHelper.addInline("app_logo", new ClassPathResource("app_logo.png").getInputStream());
+            mimeMessageHelper.addInline("app_logo", resource);
             mimeMessageHelper.setSubject(email.getSubject());
             mimeMessageHelper.setFrom(email.getFrom());
         } catch (MessagingException e) {
