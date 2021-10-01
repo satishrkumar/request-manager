@@ -35,18 +35,18 @@ public class LoanService {
         emailModel.setName(loanRequest.getBorrower().getFirstName() !=null ? loanRequest.getBorrower().getFirstName() : "2PayUBack");
         emailModel.setContent("LoanRequest submitted to  " + loanRequest.getLender().getEmailId());
         emailService.sendEmail(Email.builder()
-                .from("purviewemail@purviewservices.co.uk")
+                .from("noreply@2payuback.com")
                 .to(loanRequest.getBorrower().getEmailId())
-                .subject(loanRequest.getReasonForBorrow())
+                .subject("2PayUBack LoanApproval Notification")
                 .model(emailModel)
                 .build(), Constants.LOAN_REQUEST_EMAIL_TMPL);
 
         emailModel.setName(loanRequest.getLender().getFirstName() !=null ? loanRequest.getLender().getFirstName() : "2PayUBack");
         emailModel.setContent("LoanRequest from " + loanRequest.getBorrower().getEmailId());
         emailService.sendEmail(Email.builder()
-                .from("purviewemail@purviewservices.co.uk")
+                .from("noreply@2payuback.com")
                 .to(loanRequest.getLender().getEmailId())
-                .subject(loanRequest.getReasonForBorrow())
+                .subject("2PayUBack LoanRequest Notification")
                 .model(emailModel)
                 .build(), Constants.LOAN_REQUEST_EMAIL_TMPL);
         return State.PENDING;
