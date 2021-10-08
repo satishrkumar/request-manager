@@ -3,17 +3,17 @@ package net.pay.you.back.request.manager.facade.impl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import net.pay.you.back.request.manager.dao.LoanDAO;
+import net.pay.you.back.request.manager.domain.enums.State;
 import net.pay.you.back.request.manager.domain.loan.Loan;
 import net.pay.you.back.request.manager.facade.LoanProcessingService;
 import net.pay.you.back.request.manager.facade.UserService;
 import net.pay.you.back.request.manager.job.EmailJob;
 import net.pay.you.back.request.manager.service.SequenceGeneratorService;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +32,16 @@ public class LoanProcessingServiceImpl implements LoanProcessingService {
     @Autowired
     SequenceGeneratorService sequenceGeneratorService;
 
+    private String loanStatus = "";
+
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     UUID uuid = UUID.randomUUID();
+
+    @Override
+    public void setLoanStatus(String loanStatus) {
+        this.loanStatus = (null == loanStatus) ? "" : loanStatus;
+    }
 
     @Override
     public Loan createLoan(Loan loan) {
@@ -44,19 +51,23 @@ public class LoanProcessingServiceImpl implements LoanProcessingService {
 
     @Override
     public List<Loan> findAll() {
-        List<Loan> loanList = loanDAO.findAll();
+        List<Loan> loanList = (EnumUtils.isValidEnum(State.class, this.loanStatus))
+                ? loanDAO.findLoanByStatus(this.loanStatus) : loanDAO.findAll();
+
+        this.loanStatus = "";
         if (null != loanList && !loanList.isEmpty()) {
             return loanList;
         } else {
             logger.error("No Loan data available");
 //            throw new RuntimeException("No Loan data available");
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
     public Loan findLoanDetailsById(long id) {
         Optional<Loan> loanModelOptional = loanDAO.findLoanById(id);
+
         if (loanModelOptional.isPresent()) {
             loanModelOptional.get().setBorrower(userService.findUserByEmailId(loanModelOptional.get().getBorrowerEmailId()));
             loanModelOptional.get().setLender(userService.findUserByEmailId(loanModelOptional.get().getLenderEmailId()));
@@ -70,26 +81,34 @@ public class LoanProcessingServiceImpl implements LoanProcessingService {
 
     @Override
     public List<Loan> findLoanDetailsByLenderEmailId(final String emailId) {
-        List<Loan> loanDetails = loanDAO.findLoanByLenderEmailId(emailId);
+        List<Loan> loanDetails = (EnumUtils.isValidEnum(State.class, this.loanStatus))
+                ? loanDAO.findLoanByLenderEmailIdAndStatus(emailId, this.loanStatus)
+                : loanDAO.findLoanByLenderEmailId(emailId);
+
+        this.loanStatus = "";
         if (null != loanDetails && !loanDetails.isEmpty()) {
             return loanDetails;
         } else {
             logger.error("Loan details not found for lender email id " + emailId);
 //            throw new RuntimeException("Loan details not found for lender email id " + emailId);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
     public List<Loan> findLoanDetailsByBorrowerEmailId(final String emailId) {
-        List<Loan> loanDetails = loanDAO.findLoanByBorrowerEmailId(emailId);
+        List<Loan> loanDetails = (EnumUtils.isValidEnum(State.class, this.loanStatus))
+                ? loanDAO.findLoanByBorrowerEmailIdAndStatus(emailId, this.loanStatus)
+                : loanDAO.findLoanByBorrowerEmailId(emailId);
+
+        this.loanStatus = "";
         if (null != loanDetails && !loanDetails.isEmpty()) {
             return loanDetails;
         } else {
             logger.error("Loan details not found for borrower email id " + emailId);
 //            throw new RuntimeException("Loan details not found for borrower email id " + emailId);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
@@ -105,7 +124,7 @@ public class LoanProcessingServiceImpl implements LoanProcessingService {
             logger.error("Loan details not found for todays date having repayment date " + repaymentDate.format(formatter));
 //            throw new RuntimeException("Loan details not found for todays date having repayment date " + repaymentDate.format(formatter));
         }
-        return null;
+        return new ArrayList<>();
     }
 
     @Override

@@ -72,7 +72,8 @@ public class LoanService {
 
     }
 
-    public List<Loan> fetchAllLoans() {
+    public List<Loan> fetchAllLoans(String status) {
+        loanProcessingService.setLoanStatus(status);
         return loanProcessingService.findAll();
     }
 
@@ -80,11 +81,13 @@ public class LoanService {
         return loanProcessingService.findLoanDetailsById(id);
     }
 
-    public List<Loan> findLoanByLenderEmailId(String emailId) {
+    public List<Loan> findLoanByLenderEmailId(String emailId, String status) {
+        loanProcessingService.setLoanStatus(status);
         return loanProcessingService.findLoanDetailsByLenderEmailId(emailId);
     }
 
-    public List<Loan> findLoanByBorrowerEmailId(String emailId) {
+    public List<Loan> findLoanByBorrowerEmailId(String emailId, String status) {
+        loanProcessingService.setLoanStatus(status);
         return loanProcessingService.findLoanDetailsByBorrowerEmailId(emailId);
     }
 

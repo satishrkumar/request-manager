@@ -5,6 +5,8 @@ import java.util.List;
 import net.pay.you.back.request.manager.domain.loan.Loan;
 
 public interface LoanProcessingService {
+    void setLoanStatus(String loanStatus);
+
     Loan createLoan(Loan loan);
 
     List<Loan> findAll();
