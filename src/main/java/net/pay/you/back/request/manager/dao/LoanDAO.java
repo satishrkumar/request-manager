@@ -12,11 +12,14 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LoanDAO extends MongoRepository<Loan, Long> {
 
+    @Query("{ 'id' : ?0 }")
+    Optional<Loan> findLoanById(long id);
+
     @Query("{ 'lenderEmailId' : ?0 }")
     List<Loan> findLoanByLenderEmailId(String emailId);
 
     @Query("{ 'borrowerEmailId' : ?0 }")
-    Optional<Loan> findLoanByBorrowerEmailId(String emailId);
+    List<Loan> findLoanByBorrowerEmailId(String emailId);
 
     @Query("{ 'repaymentDate' : { $gt : ?0 , $lte : ?1 } }")
    // @Query("{ {'repaymentDate' } : ?0 }")

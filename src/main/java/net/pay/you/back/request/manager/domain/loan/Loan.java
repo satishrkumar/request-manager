@@ -63,14 +63,10 @@ public class Loan {
 
     public static Loan convertToLoanObj(BaseLoan baseLoan) {
         Loan loan = new Loan();
-        System.out.println(loan);
-        System.out.println(baseLoan);
         loan.setLenderEmailId(baseLoan.getLender()!= null ? baseLoan.getLender().getEmailId() : "gaurav.udar@purviewservices.com");
         loan.setBorrowerEmailId(baseLoan.getBorrower()!= null  ? baseLoan.getBorrower().getEmailId() : "satish.kumar@purviewservices.com");
         loan.setPrincipal(baseLoan.getLoanAmt());
         loan.setApr(baseLoan.getRateOfInterest());
-        System.out.println("*********************");
-        System.out.println(baseLoan.getRepaymentDate());
 
         loan.setRepaymentDate(baseLoan.getRepaymentDate());
         loan.setTerm(baseLoan.getLoanTerm());

@@ -7,9 +7,13 @@ import net.pay.you.back.request.manager.domain.loan.Loan;
 public interface LoanProcessingService {
     Loan createLoan(Loan loan);
 
+    List<Loan> findAll();
+
+    Loan findLoanDetailsById(long id);
+
     List<Loan> findLoanDetailsByLenderEmailId(String emailId);
 
-    Loan findLoanDetailsByBorrowerEmailId(String emailId);
+    List<Loan> findLoanDetailsByBorrowerEmailId(String emailId);
 
     List<Loan> findLoanDetailsByRepaymentDate();
 

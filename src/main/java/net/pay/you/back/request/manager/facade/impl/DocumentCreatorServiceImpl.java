@@ -1,9 +1,7 @@
 package net.pay.you.back.request.manager.facade.impl;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.util.*;
 import java.util.List;
 
 import com.amazonaws.auth.AWSCredentials;
@@ -14,15 +12,12 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.FontFactory;
-import com.itextpdf.text.Phrase;
+import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import freemarker.template.Configuration;
+import freemarker.template.TemplateException;
 import net.pay.you.back.request.manager.comm.DocumentCreator;
 import net.pay.you.back.request.manager.config.AwsS3Config;
 import net.pay.you.back.request.manager.dao.DocumentVersionDAO;
@@ -33,15 +28,19 @@ import net.pay.you.back.request.manager.facade.DocumentCreatorService;
 import net.pay.you.back.request.manager.facade.LoanProcessingService;
 import net.pay.you.back.request.manager.facade.UserService;
 import net.pay.you.back.request.manager.service.SequenceGeneratorService;
+import org.apache.kafka.common.protocol.types.Field;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.xhtmlrenderer.pdf.ITextRenderer;
 
 @Component
 public class DocumentCreatorServiceImpl implements DocumentCreatorService {
     private static final Logger logger = LogManager.getLogger(DocumentCreatorServiceImpl.class);
-    public static final String MIME_TYPE="application/pdf";
+    public static final String MIME_TYPE = "application/pdf";
     @Autowired
     private AwsS3Config s3Config;
 
@@ -56,6 +55,23 @@ public class DocumentCreatorServiceImpl implements DocumentCreatorService {
 
     @Autowired
     private DocumentVersionDAO documentVersionDAO;
+
+    @Autowired
+    @Qualifier("freeMarkerConfigurationFactoryBean")
+    private Configuration config;
+
+    private String template;
+    private Loan templateModel;
+
+    @Override
+    public void setTemplate(String template) {
+        this.template = template;
+    }
+
+    @Override
+    public void setTemplateModel(Loan templateModel) {
+        this.templateModel = templateModel;
+    }
 
     @Override
     public ByteArrayInputStream createDocument(String lenderEmailId) {
@@ -157,6 +173,27 @@ public class DocumentCreatorServiceImpl implements DocumentCreatorService {
         return new ByteArrayInputStream(out.toByteArray());
     }
 
+    @Override
+    public ByteArrayInputStream generatePDFFromTmpl() {
+        String parsed_html = "";
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            parsed_html = FreeMarkerTemplateUtils.processTemplateIntoString(config.getTemplate(template), this.templateModel);
+
+            ITextRenderer renderer = new ITextRenderer();
+            renderer.setDocumentFromString(parsed_html);
+            renderer.layout();
+            renderer.createPDF(out);
+            out.close();
+
+        } catch (IOException | TemplateException | com.lowagie.text.DocumentException e) {
+            logger.error(e.getMessage());
+        }
+//        ByteArrayInputStream inputStream = new ByteArrayInputStream(out.toByteArray());
+//        saveDocumentInAws(inputStream, lender.getFirstName() + " " + lender.getLastName());
+        return new ByteArrayInputStream(out.toByteArray());
+    }
+
 
     private void saveDocumentInAws(ByteArrayInputStream inputStream, String lenderName) {
         try {
@@ -179,16 +216,15 @@ public class DocumentCreatorServiceImpl implements DocumentCreatorService {
 
     private void saveDocVersionDetails(String docVersionId) {
         try {
-        DocVersion documentVersion = new DocVersion();
-        documentVersion.setId(sequenceGeneratorService.generateSequence(DocVersion.SEQUENCE_NAME));
-        documentVersion.setDocumentVersion(docVersionId);
-        documentVersion.setMimeType(MIME_TYPE);
-        documentVersionDAO.save(documentVersion);
+            DocVersion documentVersion = new DocVersion();
+            documentVersion.setId(sequenceGeneratorService.generateSequence(DocVersion.SEQUENCE_NAME));
+            documentVersion.setDocumentVersion(docVersionId);
+            documentVersion.setMimeType(MIME_TYPE);
+            documentVersionDAO.save(documentVersion);
         } catch (Exception ex) {
             logger.error("Error while saving document version details in mongo db ", ex);
         }
     }
-
 
     @Override
     public DocumentCreator findDocumentByEmailId(String emailId) {
