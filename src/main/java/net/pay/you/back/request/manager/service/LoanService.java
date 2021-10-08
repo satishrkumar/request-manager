@@ -69,12 +69,15 @@ public class LoanService {
         loan.setLoanState(State.PENDING);
         loanProcessingService.createLoan(loan);
         return State.PENDING;
-
     }
 
     public List<Loan> fetchAllLoans(String status) {
         loanProcessingService.setLoanStatus(status);
         return loanProcessingService.findAll();
+    }
+
+    public List<Loan> fetchUnarchivedLoans() {
+        return loanProcessingService.findUnarchivedLoans();
     }
 
     public Loan findLoanById(long id) {

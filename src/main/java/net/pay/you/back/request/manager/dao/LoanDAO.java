@@ -12,6 +12,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LoanDAO extends MongoRepository<Loan, Long> {
 
+    @Query("{ 'loanState' : {'$ne' : ?0 }}")
+    List<Loan> findUnarchivedLoans(String status);
+
     @Query("{ 'loanState' : ?0 }")
     List<Loan> findLoanByStatus(String status);
 

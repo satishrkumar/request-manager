@@ -49,6 +49,11 @@ public class LoanController {
         return new ResponseEntity<>(loanService.fetchAllLoans(status), HttpStatus.OK);
     }
 
+    @GetMapping("/fetchUnarchivedLoans")
+    public ResponseEntity<List<Loan>> fetchUnarchivedLoans() {
+        return new ResponseEntity<>(loanService.fetchUnarchivedLoans(), HttpStatus.OK);
+    }
+
     @GetMapping("/findLoanById/{id}")
     public ResponseEntity<Loan> findLoanById(@PathVariable long id) {
         Loan loan = loanService.findLoanById(id);

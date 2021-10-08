@@ -65,6 +65,19 @@ public class LoanProcessingServiceImpl implements LoanProcessingService {
     }
 
     @Override
+    public List<Loan> findUnarchivedLoans() {
+        List<Loan> loanList = loanDAO.findUnarchivedLoans(State.REJECTED.name());
+
+        if (null != loanList && !loanList.isEmpty()) {
+            return loanList;
+        } else {
+            logger.error("No Loan data available");
+//            throw new RuntimeException("No Loan data available");
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
     public Loan findLoanDetailsById(long id) {
         Optional<Loan> loanModelOptional = loanDAO.findLoanById(id);
 

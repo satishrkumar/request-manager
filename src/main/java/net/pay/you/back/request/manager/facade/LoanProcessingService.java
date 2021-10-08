@@ -11,6 +11,8 @@ public interface LoanProcessingService {
 
     List<Loan> findAll();
 
+    List<Loan> findUnarchivedLoans();
+
     Loan findLoanDetailsById(long id);
 
     List<Loan> findLoanDetailsByLenderEmailId(String emailId);
