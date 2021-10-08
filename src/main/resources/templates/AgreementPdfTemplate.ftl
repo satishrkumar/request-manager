@@ -2,18 +2,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Promissory note</title>
+    <style type="text/css">
+        div {
+            padding-top: 5px;
+        }
+    </style>
 </head>
 <body style="margin: 0; padding: 0;">
     <h2 style="text-align: center;">
-        <span>PROMISSORY NOTE</span>
+        <div><img src="${app_logo_src}" style="width:150px; display:block; margin:auto;"></img></div>
+        <div><span>PROMISSORY NOTE</span></div>
     </h2>
 
     <div class="declaration">
-        <p>${borrower.firstName} ${borrower.lastName} of ${borrower.address1},
-            ${borrower.address2} ${borrower.country} ${borrower.postalcode} (we or us)
+        <p>${loan.borrower.firstName} ${loan.borrower.lastName} of ${loan.borrower.address1},
+            ${loan.borrower.address2} ${loan.borrower.country} ${loan.borrower.postalcode} (we or us)
             promises to pay
-            ${lender.firstName} ${lender.lastName} of ${lender.address1},
-            ${lender.address2} ${lender.country} ${lender.postalcode} (you)</p>
+            ${loan.lender.firstName} ${loan.lender.lastName} of ${loan.lender.address1},
+            ${loan.lender.address2} ${loan.lender.country} ${loan.lender.postalcode} (you)</p>
     </div>
 
     <div class="interest">
@@ -26,7 +32,7 @@
     <div class="installment">
         <h3>Installments</h3>
         <ul>
-            <li>We will make ${apr} payments of ${principal} weekly on Monday of each week, with the first payment being made on 01 October 2021 and a final payment of 10,000 at the end of the loan term on ${repaymentDate}.</li>
+            <li>We will make ${loan.apr} payments of ${loan.principal} weekly on Monday of each week, with the first payment being made on 01 October 2021 and a final payment of 10,000 at the end of the loan term on ${loan.repaymentDate}.</li>
         </ul>
     </div>
 
@@ -86,14 +92,14 @@
             <span style="float: right">_____________________________</span>
         </div>
         <div class="borrower_name">
-            <span>${borrower.firstName} ${borrower.lastName}</span>
+            <span>${loan.borrower.firstName} ${loan.borrower.lastName}</span>
         </div>
         <div class="lender_signature">
             <span>_____________________________</span>
             <span style="float: right">_____________________________</span>
         </div>
         <div class="lender_name">
-            <span>${lender.firstName} ${lender.lastName}</span>
+            <span>${loan.lender.firstName} ${loan.lender.lastName}</span>
         </div>
     </div>
 

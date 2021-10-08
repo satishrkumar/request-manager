@@ -9,6 +9,7 @@ import net.pay.you.back.request.manager.domain.enums.State;
 import net.pay.you.back.request.manager.domain.loan.Loan;
 import net.pay.you.back.request.manager.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class LoanController {
     @Autowired
     LoanService loanService;
+    @Autowired
+    DocumentsController documentsController;
 
     @PostMapping("/requestLoan")
     public ResponseEntity<Loan> requestLoan(@RequestBody LoanRequestPayload loanRequest) {
@@ -32,10 +35,12 @@ public class LoanController {
     }
 
     @PostMapping("/approveLoan/{id}")
-    public ResponseEntity<Loan> approveLoan(@PathVariable long id) {
+//    public ResponseEntity<Loan> approveLoan(@PathVariable long id) {
+    public ResponseEntity<InputStreamResource> approveLoan(@PathVariable long id) {
         Loan loan = loanService.approveLoan(id);
-        return new ResponseEntity<>(loan,
-                (null != loan) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+//        return new ResponseEntity<>(loan,
+//                (null != loan) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
+        return documentsController.generateAgrDocuments(id);
     }
 
     @PostMapping("/editLoan")

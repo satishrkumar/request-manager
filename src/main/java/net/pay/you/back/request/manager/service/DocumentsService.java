@@ -30,6 +30,9 @@ public class DocumentsService {
             documentCreatorService.setTemplateModel(loanDetails);
             return documentCreatorService.generatePDFFromTmpl();
         }
+
+        // TODO: Create a new table to store PDF data
+
         return null;
     };
 }

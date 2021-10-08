@@ -1,6 +1,7 @@
 package net.pay.you.back.request.manager.controller;
 
 import java.io.*;
+
 import net.pay.you.back.request.manager.service.DocumentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
@@ -26,10 +27,15 @@ public class DocumentsController {
         headers.add("Content-Type", "application/pdf");
         headers.add("Content-Disposition", "attachment; filename=agreement.pdf");
 
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .contentType(MediaType.APPLICATION_PDF)
-                .body(new InputStreamResource(bis));
+        if (null != bis) {
+            return ResponseEntity
+                    .ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(new InputStreamResource(bis));
+
+        }
+        return ResponseEntity.ok().body(null);
+
     }
 }

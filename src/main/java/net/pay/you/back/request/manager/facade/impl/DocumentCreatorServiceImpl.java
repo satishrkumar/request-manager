@@ -33,6 +33,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -60,8 +62,12 @@ public class DocumentCreatorServiceImpl implements DocumentCreatorService {
     @Qualifier("freeMarkerConfigurationFactoryBean")
     private Configuration config;
 
+    @Autowired
+    @Qualifier("webApplicationContext")
+    private ResourceLoader resourceLoader;
+
     private String template;
-    private Loan templateModel;
+    private Map templateModel;
 
     @Override
     public void setTemplate(String template) {
@@ -70,7 +76,17 @@ public class DocumentCreatorServiceImpl implements DocumentCreatorService {
 
     @Override
     public void setTemplateModel(Loan templateModel) {
-        this.templateModel = templateModel;
+        Resource resource = resourceLoader.getResource("classpath:app_logo.png");
+        Map<String, Object> model = new HashMap<>();
+        model.put("loan", templateModel);
+
+        try {
+            model.put("app_logo_src", resource.getURI());
+        }
+        catch (IOException e) {
+            logger.error(e);
+        }
+        this.templateModel = model;
     }
 
     @Override
