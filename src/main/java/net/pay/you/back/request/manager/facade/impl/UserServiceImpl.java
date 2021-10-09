@@ -10,11 +10,15 @@ import net.pay.you.back.request.manager.domain.user.User;
 import net.pay.you.back.request.manager.exception.UserNotFoundException;
 import net.pay.you.back.request.manager.facade.UserService;
 import net.pay.you.back.request.manager.service.SequenceGeneratorService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserServiceImpl implements UserService {
+    private static final Logger logger = LogManager.getLogger(UserServiceImpl.class);
+
     @Autowired
     UserDAO userDAO;
 
@@ -40,8 +44,10 @@ public class UserServiceImpl implements UserService {
         if (userModelOptional.isPresent()) {
             return userModelOptional.get();
         } else {
-            throw new UserNotFoundException("User not found with emailId " + emailId);
+            logger.error("User with email id {} not found!", emailId);
+//            throw new UserNotFoundException("User not found with emailId " + emailId);
         }
+        return null;
     }
 
     @Override
@@ -50,8 +56,10 @@ public class UserServiceImpl implements UserService {
         if (userModelOptional.isPresent()) {
             return userModelOptional.get();
         } else {
-            throw new UserNotFoundException("User not found with emailId " + id);
+            logger.error("User with id {} not found!", id);
+//            throw new UserNotFoundException("User not found with emailId " + id);
         }
+        return null;
     }
 
     @Override
@@ -60,14 +68,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String deleteUser(final Long id) {
+    public User deleteUser(final Long id) {
         Optional<User> userModelOptional = userDAO.findById(id);
         if (userModelOptional.isPresent()) {
             userDAO.delete(userModelOptional.get());
-            return "User deleted with id " + id;
+            return userModelOptional.get();
         } else {
-            throw new UserNotFoundException("User not found for id " + id);
+            logger.error("User with id {} not found!", id);
+//            throw new UserNotFoundException("User not found for id " + id);
         }
+        return null;
     }
 
 

@@ -17,5 +17,5 @@ public interface UserService {
 
     User updateExistingUser(User userModel);
 
-    String deleteUser(Long id);
+    User deleteUser(Long id);
 }

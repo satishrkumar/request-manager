@@ -26,49 +26,63 @@ public class UserController {
     UserService userService;
 
     @PostMapping("/registerUser")
-    public User create(@RequestBody User user)
-    {
+    public User create(@RequestBody User user) {
         user.setEmailId(user.getUsername());
         return userService.createUser(user);
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity authenticate(@RequestBody User user)
-    {
-     try {
-         final User savedUser = userService.findUserByEmailId(user.getUsername());
-         if(savedUser.getPassword().equals(user.getPassword())){
-             savedUser.setPassword(null);
-             return ResponseEntity.ok(savedUser);
-         }else{
-             return ResponseEntity.badRequest().build();
-         }
+    public ResponseEntity authenticate(@RequestBody User user) {
+        try {
+            final User savedUser = userService.findUserByEmailId(user.getUsername());
+            if (savedUser.getPassword().equals(user.getPassword())) {
+                savedUser.setPassword(null);
+                return ResponseEntity.ok(savedUser);
+            } else {
+                return ResponseEntity.badRequest().build();
+            }
 
-     }catch (UserNotFoundException userNotFoundException){
-         return ResponseEntity.notFound().build();
-     }
+        } catch (UserNotFoundException userNotFoundException) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping("/read")
-    public List<User> read() {
-        return userService.readAllUser();
+    public ResponseEntity<List<User>> read() {
+        return ResponseEntity.ok().body(userService.readAllUser());
     }
 
     @GetMapping("/read/{id}")
-    public User findUserByEmailId(@PathVariable Long id) {
-        final User userById = userService.findUserById(id);
-        userById.setPassword(null);
-        return userById;
+    public ResponseEntity<User> findUserById(@PathVariable Long id) {
+        final User user = userService.findUserById(id);
+        if (null == user)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        user.setPassword(null);
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping("/readByEmailid/{emailId}")
+    public ResponseEntity<User> findUserByEmailId(@PathVariable String emailId) {
+        final User user = userService.findUserByEmailId(emailId);
+        if (null == user)
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        user.setPassword(null);
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PutMapping("/update")
-    public User update(@RequestBody User userModel) {
-        return userService.updateExistingUser(userModel);
+    public ResponseEntity<User> update(@RequestBody User userModel) {
+        User user = userService.updateExistingUser(userModel);
+        return new ResponseEntity<>(user,
+                (null == user) ? HttpStatus.NOT_FOUND : HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public String delete(@PathVariable Long id) {
-        return userService.deleteUser(id);
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        User user = userService.deleteUser(id);
+        if (null == user)
+            return new ResponseEntity<>("Not Found!", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("Deleted Successfully!", HttpStatus.OK);
     }
 
 }

@@ -82,8 +82,7 @@ public class DocumentCreatorServiceImpl implements DocumentCreatorService {
 
         try {
             model.put("app_logo_src", resource.getURI());
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error(e);
         }
         this.templateModel = model;
@@ -205,6 +204,7 @@ public class DocumentCreatorServiceImpl implements DocumentCreatorService {
         } catch (IOException | TemplateException | com.lowagie.text.DocumentException e) {
             logger.error(e.getMessage());
         }
+//        TODO: To push the generated agreement to S3 bucket. Currently throwing "Invalid Key" error
 //        ByteArrayInputStream inputStream = new ByteArrayInputStream(out.toByteArray());
 //        saveDocumentInAws(inputStream, lender.getFirstName() + " " + lender.getLastName());
         return new ByteArrayInputStream(out.toByteArray());

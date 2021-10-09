@@ -23,6 +23,11 @@ public class LoanController {
     @Autowired
     DocumentsController documentsController;
 
+    @GetMapping("/test")
+    public ResponseEntity<String> test() {
+        return new ResponseEntity<>("Service is up!", HttpStatus.OK);
+    }
+
     @PostMapping("/requestLoan")
     public ResponseEntity<Loan> requestLoan(@RequestBody LoanRequestPayload loanRequest) {
         Loan loan = loanService.requestLoan(loanRequest.getLoanRequest());
