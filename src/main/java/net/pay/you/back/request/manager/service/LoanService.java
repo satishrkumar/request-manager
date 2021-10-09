@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import net.pay.you.back.request.manager.comm.BaseLoan;
 import net.pay.you.back.request.manager.comm.LoanApproval;
@@ -26,7 +27,7 @@ public class LoanService {
     @Autowired
     EmailService emailService;
 
-    public State requestLoan(LoanRequest loanRequest) {
+    public Loan requestLoan(LoanRequest loanRequest) {
         Loan loan = Loan.convertFromBaseLoanRequest(loanRequest);
         loan.setLoanState(State.PENDING);
         loanProcessingService.createLoan(loan);
@@ -49,15 +50,18 @@ public class LoanService {
                 .subject("2PayUBack LoanRequest Notification")
                 .model(emailModel)
                 .build(), Constants.LOAN_REQUEST_EMAIL_TMPL);
-        return State.PENDING;
+        return loan;
 
    }
 
-    public State approveLoan(LoanApproval loanApproval) {
-        Loan loan = Loan.convertFromBaseLoanApproval(loanApproval);
-        loan.setLoanState(State.IN_PROCESS);
-        loanProcessingService.createLoan(loan);
-        return State.IN_PROCESS;
+    public Loan approveLoan(long id) {
+//        Loan loan = Loan.convertFromBaseLoanApproval(loanApproval);
+        Loan loan = findLoanById(id);
+        if(null != loan) {
+            loan.setLoanState(State.APPROVED);
+            loanProcessingService.updateExistingLoan(loan);
+        }
+        return loan;
     }
 
     public State editLoan(LoanRequest loanRequest) {
@@ -65,14 +69,28 @@ public class LoanService {
         loan.setLoanState(State.PENDING);
         loanProcessingService.createLoan(loan);
         return State.PENDING;
-
     }
 
-    public List<Loan> findLoanByLenderEmailId(String emailId) {
+    public List<Loan> fetchAllLoans(String status) {
+        loanProcessingService.setLoanStatus(status);
+        return loanProcessingService.findAll();
+    }
+
+    public List<Loan> fetchUnarchivedLoans() {
+        return loanProcessingService.findUnarchivedLoans();
+    }
+
+    public Loan findLoanById(long id) {
+        return loanProcessingService.findLoanDetailsById(id);
+    }
+
+    public List<Loan> findLoanByLenderEmailId(String emailId, String status) {
+        loanProcessingService.setLoanStatus(status);
         return loanProcessingService.findLoanDetailsByLenderEmailId(emailId);
     }
 
-    public Loan findLoanByBorrowerEmailId(String emailId) {
+    public List<Loan> findLoanByBorrowerEmailId(String emailId, String status) {
+        loanProcessingService.setLoanStatus(status);
         return loanProcessingService.findLoanDetailsByBorrowerEmailId(emailId);
     }
 

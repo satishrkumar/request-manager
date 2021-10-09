@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserDAO extends MongoRepository<User, Long> {
     @Query("{ 'emailId' : ?0 }")
-    Optional<User> findLoanByLenderEmailId(String emailId);
+    Optional<User> findUserByEmailId(String emailId);
 }

@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findUserByEmailId(final String emailId) {
-        Optional<User> userModelOptional = userDAO.findLoanByLenderEmailId(emailId);
+        Optional<User> userModelOptional = userDAO.findUserByEmailId(emailId);
         if (userModelOptional.isPresent()) {
             return userModelOptional.get();
         } else {
