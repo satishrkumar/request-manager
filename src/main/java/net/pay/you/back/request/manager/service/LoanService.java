@@ -54,11 +54,11 @@ public class LoanService {
 
    }
 
-    public Loan approveLoan(long id) {
+    public Loan editLoanStatus(long id, State loanStatus) {
 //        Loan loan = Loan.convertFromBaseLoanApproval(loanApproval);
         Loan loan = findLoanById(id);
         if(null != loan) {
-            loan.setLoanState(State.APPROVED);
+            loan.setLoanState(loanStatus);
             loanProcessingService.updateExistingLoan(loan);
         }
         return loan;

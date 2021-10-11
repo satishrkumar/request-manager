@@ -35,18 +35,23 @@ public class LoanController {
                 (null != loan) ? HttpStatus.CREATED : HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/approveLoan/{id}")
-    public ResponseEntity<InputStreamResource> approveLoan(@PathVariable long id) {
-//    public ResponseEntity<Loan> approveLoan(@PathVariable long id) {
-        Loan loan = loanService.approveLoan(id);
-//        return new ResponseEntity<>(loan,
-//                (null != loan) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
-        return documentsController.generateAgrDocuments(id);
+    @GetMapping("/approveLoan/{id}")
+    public ResponseEntity<Loan> approveLoan(@PathVariable long id) {
+        Loan loan = loanService.editLoanStatus(id, State.APPROVED);
+        return new ResponseEntity<>(loan,
+                (null != loan) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/editLoan")
     public State editLoan(@RequestBody LoanRequest loanRequest) {
         return loanService.editLoan(loanRequest);
+    }
+
+    @GetMapping("/rejectLoan/{id}")
+    public ResponseEntity<Loan> rejectLoan(@PathVariable long id) {
+        Loan loan = loanService.editLoanStatus(id, State.REJECTED);
+        return new ResponseEntity<>(loan,
+                (null != loan) ? HttpStatus.OK : HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/fetchAllLoans")
@@ -82,6 +87,4 @@ public class LoanController {
     public ResponseEntity<List<Loan>> findLoanByRepaymentDate() {
         return new ResponseEntity<>(loanService.findLoanByRepaymentDate(), HttpStatus.OK);
     }
-
-
 }
