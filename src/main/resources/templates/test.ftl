@@ -22,8 +22,9 @@
 
     <tr>
         <td bgcolor="#eaeaea" style="padding: 40px 30px 40px 30px;">
-            <p>Dear ${name},</p>
-            <p>${content}</p>
+            <img src="cid:app_logo" style="width:200px; display:block; margin:auto;">
+            <p>Dear <#if name??>${name}<#else>User,</#if></p>
+<#--            <p>${content}</p>-->
             <p>Sending Test Email</p>
             <#--<p>Click here to verify your email <b>${token}</b></p>-->
             <p>Thanks</p>

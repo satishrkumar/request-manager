@@ -1,6 +1,7 @@
 package net.pay.you.back.request.manager.facade.impl;
 
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.List;
 
@@ -205,11 +206,16 @@ public class DocumentCreatorServiceImpl implements DocumentCreatorService {
             logger.error(e.getMessage());
         }
 //        TODO: To push the generated agreement to S3 bucket. Currently throwing "Invalid Key" error
-//        ByteArrayInputStream inputStream = new ByteArrayInputStream(out.toByteArray());
-//        saveDocumentInAws(inputStream, lender.getFirstName() + " " + lender.getLastName());
-        return new ByteArrayInputStream(out.toByteArray());
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(out.toByteArray());
+        saveDocumentInAws(inputStream, getAWSDocFormat((Loan) this.templateModel.get("loan")));//lender.getFirstName() + " " + lender.getLastName());
+        return inputStream;
     }
 
+    private String getAWSDocFormat(Loan loan) {
+        String docName = "Loan_Agreement_" + loan.getId() + "_" + LocalDateTime.now();
+        logger.info("Document - {} is being saved to S3 bucket.", docName)
+        return docName;
+    }
 
     private void saveDocumentInAws(ByteArrayInputStream inputStream, String lenderName) {
         try {
