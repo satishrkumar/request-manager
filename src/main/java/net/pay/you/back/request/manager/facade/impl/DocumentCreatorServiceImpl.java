@@ -213,7 +213,7 @@ public class DocumentCreatorServiceImpl implements DocumentCreatorService {
 
     private String getAWSDocFormat(Loan loan) {
         String docName = "Loan_Agreement_" + loan.getId() + "_" + LocalDateTime.now();
-        logger.info("Document - {} is being saved to S3 bucket.", docName)
+        logger.info("Document - {} is being saved to S3 bucket.", docName);
         return docName;
     }
 
