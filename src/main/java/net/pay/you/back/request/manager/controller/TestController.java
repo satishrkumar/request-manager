@@ -21,8 +21,8 @@ public class TestController {
         return new Message("All good. You can see this because you are Authenticated.");
     }
 
-    @GetMapping(value = "/private/test-endpoint-scoped")
-    public Message privateScopedEndpoint() {
-        return new Message("All good. You can see this because you are Authenticated with a Token granted the 'read:messages' scope");
-    }
+//    @GetMapping(value = "/private/test-endpoint-scoped")
+//    public Message privateScopedEndpoint() {
+//        return new Message("All good. You can see this because you are Authenticated with a Token granted the 'read:messages' scope");
+//    }
 }
